@@ -175,7 +175,7 @@ class DepthAnythingV2(nn.Module):
     
     def forward(self, x):
         # resize x (WidthxHeight=640x480) to Depth-Anythig-V2's original input resolution (518x518). 
-        x = F.interpolate(x, (518, 518), mode="bilinear", align_corners=True)
+        x = F.interpolate(x, (322, 434), mode="bilinear", align_corners=True)
         
         # input pre-processing
         mean = torch.tensor([[[[123.6750]], [[116.2800]], [[103.5300]]]])

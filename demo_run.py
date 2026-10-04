@@ -35,7 +35,7 @@ traced_torch_model = torch.jit.trace(torch_model, example_input)
 compile_job = hub.submit_compile_job(
     name=f'depth_anything_v2_{encoder}_518x518',
     model=traced_torch_model,
-    device=hub.Device("Samsung Galaxy S24 (Family)"),
+    device = hub.Device("Samsung Galaxy S25"),
     input_specs=dict(image=input_shape),
 )
 # share the access permission of this compile job with our evaluation server 
@@ -48,7 +48,7 @@ target_model = compile_job.get_target_model()
 profile_job = hub.submit_profile_job(
     name=f'depth_anything_v2_{encoder}_518x518',
     model=target_model,
-    device=hub.Device("Samsung Galaxy S24 (Family)"),
+    device = hub.Device("Samsung Galaxy S25"),
 )
 
 #########################################################################################################
@@ -63,7 +63,7 @@ input_array = np.expand_dims(np.transpose(np.array(image, dtype=np.float32), (2,
 inference_job = hub.submit_inference_job(
     name=f'depth_anything_v2_{encoder}_518x518',
     model=target_model,
-    device=hub.Device("Samsung Galaxy S24 (Family)"),
+    device = hub.Device("Samsung Galaxy S25"),
     inputs=dict(image=[input_array]),
 )
 on_device_output = inference_job.download_output_data()
