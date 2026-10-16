@@ -1,4 +1,5 @@
 import numpy as np, torch
+from scipy.spatial import cKDTree
 
 def predict(model, rgb_uint8):
     """rgb_uint8: (480, 640, 3) array, values 0–255 → returns (480, 640) prediction."""
@@ -30,3 +31,24 @@ def evaluate(model, samples):
         pred = median_scale(predict(model, rgb), gt, valid)
         results.append((abs_rel(pred, gt, valid), delta1(pred, gt, valid)))
     return np.mean(results, axis=0)
+
+
+
+
+def unproject(depth, valid, fx, fy, cx, cy):
+    v, u = np.nonzero(valid)
+    Z = depth[v, u]
+    X = (u - cx) * Z / fx
+    Y = (v - cy) * Z / fy
+    return np.stack([X, Y, Z], axis=1)
+    
+
+def point_metrics(P, G, tau=0.05):
+    tree_g, tree_p = cKDTree(G), cKDTree(P)
+    d_pg, _ = tree_g.query(P)       # each predicted point → nearest GT point
+    d_gp, _ = tree_p.query(G)       # each GT point → nearest predicted point
+    precision = np.mean(d_pg < tau)
+    recall = np.mean(d_gp < tau)
+    chamfer = np.mean(d_pg) + np.mean(d_gp)
+    return {"precision": precision, "recall": recall, "fscore":2 * precision * recall / (precision + recall) if precision + recall > 0 else 0.0, "chamfer":chamfer }
+    
