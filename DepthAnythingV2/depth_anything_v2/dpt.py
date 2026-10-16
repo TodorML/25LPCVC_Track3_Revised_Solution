@@ -169,13 +169,14 @@ class DepthAnythingV2(nn.Module):
         }
         
         self.encoder = encoder
+        self.input_size = (518, 518)
         self.pretrained = DINOv2(model_name=encoder)
         
         self.depth_head = DPTHead(self.pretrained.embed_dim, features, use_bn, out_channels=out_channels, use_clstoken=use_clstoken)
     
     def forward(self, x):
-        # resize x (WidthxHeight=640x480) to Depth-Anythig-V2's original input resolution (518x518). 
-        x = F.interpolate(x, (322, 434), mode="bilinear", align_corners=True)
+        # resize x (WidthxHeight=640x480) to self.input_size
+        x = F.interpolate(x, self.input_size, mode="bilinear", align_corners=True)
         
         # input pre-processing
         mean = torch.tensor([[[[123.6750]], [[116.2800]], [[103.5300]]]])

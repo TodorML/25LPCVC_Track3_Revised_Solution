@@ -169,6 +169,8 @@ class DepthAnythingV2(nn.Module):
         }
         
         self.max_depth = max_depth
+
+        self.fused_norm = False
         
         self.encoder = encoder
         self.pretrained = DINOv2(model_name=encoder)
@@ -178,11 +180,12 @@ class DepthAnythingV2(nn.Module):
     def forward(self, x):
         # 480x640 raw [0,255] -> model resolution
         x = F.interpolate(x, (322, 434), mode="bilinear", align_corners=True)
-
-        # input normalization inside the model (run C)
-        mean = torch.tensor([[[[123.6750]], [[116.2800]], [[103.5300]]]])
-        std  = torch.tensor([[[[58.3950]],  [[57.1200]],  [[57.3750]]]])
-        x = (x - mean) / std
+        # run D: normalization is already in patch_embed weights        
+        if not self.fused_norm:  
+            # input normalization inside the model (run C)
+            mean = torch.tensor([[[[123.6750]], [[116.2800]], [[103.5300]]]],device=x.device)
+            std  = torch.tensor([[[[58.3950]],  [[57.1200]],  [[57.3750]]]], device=x.device)
+            x = (x - mean) / std
 
         patch_h, patch_w = x.shape[-2] // 14, x.shape[-1] // 14
         features = self.pretrained.get_intermediate_layers(
