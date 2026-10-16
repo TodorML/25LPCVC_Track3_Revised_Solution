@@ -2,7 +2,8 @@
 
 Forked from [lpcvai/25LPCVC_Track3_Sample_Solution](https://github.com/lpcvai/25LPCVC_Track3_Sample_Solution).
 
-This repo documents my work on Track 3 of the 2025 Low Power Computer Vision Challenge: optimizing and fine-tuning [Depth Anything V2](https://github.com/DepthAnything/Depth-Anything-V2) (ViT-S) for metric depth estimation on a Samsung Galaxy S25, evaluated via Qualcomm AI Hub.
+This repo documents my work on Track 3 of the 2025 Low Power Computer Vision Challenge: optimizing and fine-tuning [Depth Anything V2](https://github.com/DepthAnything/Depth-Anything-V2) (ViT-S) for metric depth estimation on a Samsung Galaxy S25, evaluated via Qualcomm AI Hub. The optimization part was done by IEEE LPCVC 2025 winner solution - Sailor Moon. 
+Please refer to the repo:https://github.com/chen7545/LPCVC2025_SailorMoon_Track3  for that part.
 
 ---
 
